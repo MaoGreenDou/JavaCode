@@ -6,7 +6,7 @@ import java.util.Date;
 public class Demo01 {
 	
 public static void main(String[] args) {
-//
+
 /* 0.  前备知识 */
 	
 //	1.java产生背景
@@ -124,8 +124,37 @@ public static void main(String[] args) {
 //	总结：被覆写的方法，在子类和父类中只有访问权限，异常处理，和函数体可以
 //	不一样，且前两者的要求在子类中不能比父类更严格。注意private不能被继承
 	
+	
+/* 12. 关于异常处理机制  */
+	
+//	System.out.println(testExcept());
+//	Exception exception = new ArithmeticException();
+//	System.out.println(exception.getMessage());  //null
+//	System.out.println(exception.toString());    //AE
+//	exception.printStackTrace();
+	
 	}
 
+
+/* 该函数用来测试异常处理机制  */
+//    public static int testExcept()
+//    {
+//    	int x = 10;
+//    	try {
+//			x = 20;
+//			System.out.println(x/0);
+//			return x;
+//		} catch (Exception e) {
+//			x = 30;
+//			return x;    会先执行fianlly再返回
+//		}finally {
+//			x = 40;
+//			System.out.println(x);
+//			//return x;  直接从finally返回
+//		}
+//    	//return x;  测试不同语句块的x是否相互影响
+//    }
+//
 
 }
 
