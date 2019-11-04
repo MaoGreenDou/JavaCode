@@ -133,9 +133,43 @@ public static void main(String[] args) {
 //	System.out.println(exception.toString());    //AE
 //	exception.printStackTrace();
 	
+/* 13.关于泛型Generics */	
+//    Info<Integer> idemo = new Info<Integer>();
+//    Info<Double> idemo02 = new Info<Double>();
+//    idemo.t = 10;
+//    System.out.println(idemo.t+1);
+//    System.out.println(idemo.fun("Hello"));
+//    testInfo(idemo);
+//    testInfo(idemo02);
+	
+	
+	
 	}
 
-
+//------------------------------------------
+/*  该系列函数用来测试泛型机制   */
+//     public static void testInfo(Info myInfo)   //方案一：去掉报错
+//     {
+//    	 System.out.println(myInfo.t);
+//     }
+     
+//     public static void testInfo(Info<?> myInfo)   //方案二：通配符
+//     {
+//    	 System.out.println(myInfo.t);
+//     }
+//
+//       public static void testInfo(Info<? extends Object> myInfo)   //方案三：上限
+//       {
+//    	   System.out.println(myInfo.t);
+//       }
+       
+//       public static void testInfo(Info<? super Integer> myInfo)    //方案四：下限
+//       {
+//    	   System.out.println(myInfo.t);
+//       }
+     
+     
+//------------------------------------------
 /* 该函数用来测试异常处理机制  */
 //    public static int testExcept()
 //    {
@@ -156,10 +190,11 @@ public static void main(String[] args) {
 //    }
 //
 
+
 }
 
 
-
+//------------------------------------------
 class Person{
 	String nameString;
 	int age;
@@ -176,7 +211,20 @@ class Person{
 	}
 }
 
-class Student extends Person{
+//------------------------------------------
+/* 用来测试Generics */
+class Info<T>{    //泛型类
+	public T t;
+	
+	public <V> V fun(V v)    //泛型方法
+	{
+		return v;
+	}
+}
+
+//------------------------------------------
+/* 用来测试继承，多态的相关知识点 */
+class Student extends Person {
 	 void fun() {
 		System.out.println("Student");
 	}
@@ -188,7 +236,8 @@ class Student extends Person{
 	}
 }
 
-
+//------------------------------------------
+/* 用来测试访问权限 （单例模式） */
 class Singleton{
 	private static final Singleton s1 = new Singleton();
 	
@@ -206,6 +255,8 @@ class Singleton{
 	}
 }
 
-enum Color{
+//------------------------------------------
+/* 枚举类型 */
+enum Color {
 	RED,BULE,BLACK;
 }
