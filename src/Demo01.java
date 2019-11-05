@@ -1,7 +1,12 @@
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Demo01 {
 	
@@ -142,7 +147,52 @@ public static void main(String[] args) {
 //    testInfo(idemo);
 //    testInfo(idemo02);
 	
+//	ArrayList<String> alS = new ArrayList<String>();
+//	alS.add("first");
+//	alS.add("second");
+//	alS.add("third");
+//	
+//	Set<Integer> sIntegers = new HashSet<Integer>();
+//	sIntegers.add(1);
+//	sIntegers.add(1);    //可以加入相同的吗？
+//	sIntegers.add(2);
+//	
+//	HashMap<String, Integer> msi = new HashMap<String, Integer>();
+//	msi.put("First", 1);
+//	msi.put("First",1);
+//	msi.put("second", 2);
+//	
+//	Iterator<?> iterator = alS.iterator();
+//	while (iterator.hasNext()) {
+//		System.out.println(iterator.next());
+//		
+//	}
+//	
+//	iterator = sIntegers.iterator();
+//	while (iterator.hasNext()) {
+//		System.out.println(iterator.next());
+//		
+//	}
+//	
+////	iterator = msi.iterator();    //map没有实现 Iterator
+////	while (iterator.hasNext()) {
+////		System.out.println(iterator.next());
+////		
+////	}
+////	
+//	
+//	/* 可以继续优化，如何实现不暴露内部代码的细节  */
+////	Set<String> kSet = msi.keySet();   //<String>---><?>下面的for-each循环无法运行
+////	for(String iString :kSet)
+////	{
+////		System.out.println(msi.get(iString));
+////	}
 	
+/* 14. 关于静态方法的覆写 */
+//	demoStatic.fun();
+//	demoStaticInherit.fun();
+//	demoStaticInherit d1 = new demoStaticInherit();
+//	d1.fun();
 	
 	}
 
@@ -190,10 +240,19 @@ public static void main(String[] args) {
 //    }
 //
 
-
 }
 
+class demoStatic{
+	public static void fun() {
+		System.out.println("in basic class");
+	}
+}
 
+class demoStaticInherit extends demoStatic{
+	public static void fun() {
+		System.out.println("in basic class");
+	}
+}
 //------------------------------------------
 class Person{
 	String nameString;
