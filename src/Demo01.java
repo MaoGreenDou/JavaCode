@@ -1,4 +1,8 @@
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,7 +14,7 @@ import java.util.Set;
 
 public class Demo01 {
 	
-public static void main(String[] args) {
+public static void main(String[] args) throws FileNotFoundException {
 
 /* 0.  前备知识 */
 	
@@ -122,7 +126,7 @@ public static void main(String[] args) {
 //	Student s1 = new Student();
 //	s1.fun();    //可以运行
 //	Person p1 = new Student();
-// //	p1.fun();    //不可以运行，此时的fun是Student独有的
+////	p1.fun();    //不可以运行，此时的fun是Student独有的
 //	s1.fun1();     //只是继承，没有被覆写
 //	s1.fun1(1);    //没有被覆写，只是重载
 //	
@@ -193,7 +197,31 @@ public static void main(String[] args) {
 //	demoStaticInherit.fun();
 //	demoStaticInherit d1 = new demoStaticInherit();
 //	d1.fun();
-	
+	//Demo01();
+	demo2();
+	}    //--static截止处----------
+
+    public static void Demo01() {
+		System.out.println("aaa");
+		
+		
+		PrintStream ps = System.out;			//可以换一种方式写：获取标注输出流
+		ps.println(97);							//底层通过Integer.toString()将97转换成字符串并打印
+		ps.write(97);							//查找码表,找到对应的a并打印		
+		Person p1 = new Person("张三", 23);
+		ps.println(p1);							//默认调用p1的toString方法		
+		Person p2 = null;						//打印引用数据类型,如果是null,就打印null,如果不是null就打印对象的toString方法
+		ps.println(p2);
+		ps.close();
+    }
+    
+	public static void demo2() throws FileNotFoundException {
+		PrintWriter pw = new PrintWriter(new FileOutputStream("v.txt"),true);
+		//pw.println(97);//自动刷出功能只针对的是println方法
+		//pw.write(97); //查码表得到a，如果忘了关流，是写不出的，有2K缓冲
+		pw.print(97); // 忘了关流也不能自动刷出
+		pw.println(97); //自动刷出
+		pw.close(); 
 	}
 
 //------------------------------------------
@@ -240,7 +268,7 @@ public static void main(String[] args) {
 //    }
 //
 
-}
+}    //Demo01截止处
 
 class demoStatic{
 	public static void fun() {
@@ -256,11 +284,17 @@ class demoStaticInherit extends demoStatic{
 //------------------------------------------
 class Person{
 	String nameString;
-	int age;
+	private int age;
 	
-	private void fun()
+	public Person(String n,int a) {
+		nameString = n;
+		age = a;
+	}
+	
+	public void fun()
 	{
 		System.out.println("Person");
+		System.out.println(age);
 	}
 	
 	public int fun1()
@@ -284,8 +318,9 @@ class Info<T>{    //泛型类
 //------------------------------------------
 /* 用来测试继承，多态的相关知识点 */
 class Student extends Person {
-	 void fun() {
-		System.out.println("Student");
+	public void fun() {
+		 super.fun();
+		 System.out.println("Student");
 	}
 	 
 	public int fun1(int a)
