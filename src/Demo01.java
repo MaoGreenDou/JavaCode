@@ -1,8 +1,16 @@
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +20,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+
+
 public class Demo01 {
 	
-public static void main(String[] args) throws FileNotFoundException {
+public static void main(String[] args) throws IOException {
 
 /* 0.  前备知识 */
 	
@@ -132,7 +142,7 @@ public static void main(String[] args) throws FileNotFoundException {
 //	
 //	总结：被覆写的方法，在子类和父类中只有访问权限，异常处理，和函数体可以
 //	不一样，且前两者的要求在子类中不能比父类更严格。注意private不能被继承
-	
+//  具体情况可以结合继承体系在内存中的分配进行分析	
 	
 /* 12. 关于异常处理机制  */
 	
@@ -193,15 +203,37 @@ public static void main(String[] args) throws FileNotFoundException {
 ////	}
 	
 /* 14. 关于静态方法的覆写 */
+	/*
+	  * 证明了静态方法的覆写是开辟一个新的内存区域存储新的函数体
+	  * 和静态变量不一样 
+	 */
 //	demoStatic.fun();
 //	demoStaticInherit.fun();
 //	demoStaticInherit d1 = new demoStaticInherit();
+//	demoStatic d2 = new demoStatic();
 //	d1.fun();
-	//Demo01();
-	demo2();
+//	d2.fun();
+//	
+	
+/* 15. IO操作   */	
+	//demo1();
+	//demo2();
+	//demo3();
+	//demo4();
+	//demo5();
+	//demo6();
+	//demo7();
 	}    //--static截止处----------
 
-    public static void Demo01() {
+    public static void demo1() {
+    	/* 
+    	  *  测试说明：
+    	  *  测试字节输出装饰流PrintStream
+    	 * print<?>方法会（打包参数）调用参数toString方法
+    	 * write方法输出码表对应值
+    	  *  注意关闭流或者执行刷出操作（ln不用）
+    	 * write方法不能输出自定义类型
+    	 */
 		System.out.println("aaa");
 		
 		
@@ -215,15 +247,161 @@ public static void main(String[] args) throws FileNotFoundException {
 		ps.close();
     }
     
-	public static void demo2() throws FileNotFoundException {
-		PrintWriter pw = new PrintWriter(new FileOutputStream("v.txt"),true);
+	public static void demo2() throws IOException {
+		/*
+		 *  字符装饰流也可以包装字节流
+		 *  字符流的输出带2K缓存
+		 */
+		PrintWriter pw = new PrintWriter(new FileWriter("demo03.txt"),true);
+		//PrintWriter pw = new PrintWriter(new FileOutputStream("demo03.txt"),true);
+		
 		//pw.println(97);//自动刷出功能只针对的是println方法
-		//pw.write(97); //查码表得到a，如果忘了关流，是写不出的，有2K缓冲
+		pw.write(97); //查码表得到a，如果忘了关流，是写不出的，有2K缓冲
 		pw.print(97); // 忘了关流也不能自动刷出
-		pw.println(97); //自动刷出
+		//pw.println(97); //自动刷出
 		pw.close(); 
+		
 	}
+	
+	public static void demo3() {
+		byte[] array = new byte[4];
+		int len = 0;
+		try {
+			FileInputStream iStream = new FileInputStream("demo03.txt");
+		    len = iStream.read(array);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		System.out.println(len);
+		System.out.println(new String(array,0,len));
+	}
+	
+	public static void demo4() {
 
+		char[] array = new char[4];
+		int len = 0;
+		try {
+			FileReader fr = new FileReader("demo03.txt");
+		    len = fr.read(array);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		System.out.println(len);
+		System.out.println(new String(array,0,len));
+	}
+	
+	public static void demo5() {
+		/*
+		 * GBK码读中文
+		  *  一个中文一个字符
+		 */
+		int len = 0;
+		char[] arr = new char[4];
+		try {
+			InputStreamReader tr = new InputStreamReader(new FileInputStream("demo03.txt"),"GBK");
+		    len = tr.read(arr);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		System.out.println(len);
+		System.out.println(new String(arr,0,len));
+	}
+	
+	public static void demo6() {
+		/*
+		  *  测试内容：序列化，反序列化对象IO
+		 */
+		try {
+		    Person p1 = new Person("Jack", 21);
+		    FileOutputStream os = new FileOutputStream("object.txt");
+		    ObjectOutputStream oos = new ObjectOutputStream(os);
+		    oos.writeObject(p1);
+		    
+		    Person p2  = null;
+		    FileInputStream is = new FileInputStream("object.txt");
+		    ObjectInputStream ooi = new ObjectInputStream(is);
+		    p2 = (Person)ooi.readObject();
+		    System.out.println(p2);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		
+	}
+	
+	public static void demo7() {
+		/*
+		  *  测试内容：字节流标准异常处理
+		  * 文件打开异常，文件读异常，文件写异常，文件（非null）关闭异常  
+		 */
+		
+//java 1.7
+		try(
+				FileInputStream iStream = new FileInputStream("Exception.txt");
+				FileOutputStream oStream = new FileOutputStream("ExceptionT.txt");
+				){
+			int b;
+			while((b=iStream.read())!=-1) {
+				oStream.write(b);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//java 1.6
+	    /*
+	          * 注意事项：
+	     * fis fos首先设置成null，防止局部变量无法关闭
+	          * 第一个try-catch-finally体系解决：创建异常，读写异常，资源释放三个问题
+	     * finally块中释放资源时，分开释放多个流资源，防止前面的异常导致后面也无法关闭
+	          * 即能关一个关一个
+	          * 关之前要判断是否非null
+	          * 关闭的时候 也有可能引起异常，因此也要用try-catch-finally体系
+	     * try-catch解决第一个关闭异常
+	     * finally关闭第二个流，也要嵌套一个try-catch防止第二个的关闭异常
+	     */
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = new FileInputStream("abc.txt");    //创建流异常
+			fos = new FileOutputStream("coy.txt");
+			
+			int b;
+			while ( (b= fis.read()) != -1 ) {    //读写异常
+				fos.write(b);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if(fis != null) {
+					fis.close();    //关闭异常
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (fos != null) {
+					try {
+						fos.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
+
+	}
 //------------------------------------------
 /*  该系列函数用来测试泛型机制   */
 //     public static void testInfo(Info myInfo)   //方案一：去掉报错
@@ -278,11 +456,12 @@ class demoStatic{
 
 class demoStaticInherit extends demoStatic{
 	public static void fun() {
-		System.out.println("in basic class");
+		System.out.println("in Inherit class");
 	}
 }
 //------------------------------------------
-class Person{
+class Person implements Serializable{
+	private static final long serialVersionID = 1L;
 	String nameString;
 	private int age;
 	
@@ -291,6 +470,8 @@ class Person{
 		age = a;
 	}
 	
+	
+	//private void fun()
 	public void fun()
 	{
 		System.out.println("Person");
@@ -318,6 +499,11 @@ class Info<T>{    //泛型类
 //------------------------------------------
 /* 用来测试继承，多态的相关知识点 */
 class Student extends Person {
+	public Student(String n, int a) {
+		super(n, a);
+		// TODO Auto-generated constructor stub
+	}
+
 	public void fun() {
 		 super.fun();
 		 System.out.println("Student");
